@@ -20,7 +20,7 @@ angular.module('going', [])
     $scope.time = 0;
     $scope.currtext = '';
     $scope.prevtext = '';
-
+    //FIXME bug if keyword is last in sentence, doesn't highlight
     $scope.levels = [
         {   'time':17,
             'moments':[
@@ -31,13 +31,13 @@ angular.module('going', [])
                 },
                 {   'id':'sitting',
                     'cost':3,
-                    'text':'You are strapped tightly in your seat. You pull at the belt straps over your shoulders and around your waist but they remain securely in place.',
-                    'keys':[]
+                    'text':'You are strapped tightly in your seat. You pull at the belt straps over your shoulders and around your waist but they remain securely in place. You can go back to the start if you want.',
+                    'keys':['start']
                 },
                 {   'id':'buttons',
                     'cost':2,
-                    'text':'There are a lot of buttons in front of them. Some of them have labels, but you can\'t read them because everything is shaking so much.',
-                    'keys':[]
+                    'text':'There are a lot of buttons in front of them. Some of them have labels, but you can\'t read them because everything is shaking so much. You can go back to the start if you want.',
+                    'keys':['start']
                 }
             ]
         }
@@ -46,29 +46,47 @@ angular.module('going', [])
 
 	//on load, check localstorage for previous save
 	$scope.init = function(){
-        console.log('init');
         $scope.currlevel = $scope.levels[$scope.level];
         $scope.currmoment = $scope.currlevel.moments[$scope.currmoment];
+        $scope.time = $scope.currlevel.time;
+        console.log($scope.currlevel.time);
+        $scope.outputPara();
+	};
 
+	$scope.outputPara = function(){
         var txt = $scope.currmoment.text;
         var words = txt.split(' ');
         var matchwords = $scope.currmoment.keys;
+        console.log(matchwords);
         var ret = '';
         for(var i = 0; i < words.length; i++){
             var check = matchwords.indexOf(words[i]);
             if(check !== -1){
-                ret = ret + ' <span class="word" data-ng-click="click(' + check + ')">' + words[i] + '</span>';
+                ret = ret + ' <span class="word" data-ng-click="click(\'' + words[i] + '\')">' + words[i] + '</span>';
             }
             else {
                 ret = ret + ' ' + words[i];
             }
         }
-        //$scope.html = '<a ng-click="click(1)" href="#">Click me</a>';
         $scope.html = ret;
-	};
+    };
 
-    $scope.click = function(arg) {
-        alert('Clicked ' + arg);
+    $scope.click = function(word) {
+        //console.log(word);
+        for(var x = 0; x < $scope.currlevel.moments.length; x++){
+            if($scope.currlevel.moments[x].id === word){
+                $scope.currmoment = $scope.currlevel.moments[x];
+                $scope.time = Math.max(0,$scope.time - $scope.currlevel.moments[x].cost);
+                break;
+            }
+        }
+        if($scope.time > 0){
+            $scope.outputPara();
+        }
+        else {
+            console.log('game over');
+            $scope.html = '';
+        }
     };
 
 });
