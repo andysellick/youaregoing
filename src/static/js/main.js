@@ -24,15 +24,15 @@ angular.module('going', [])
     $scope.levels = [
         {   'time':17,
             'moments':[
-                {   'id':'start',
+                {   'id':'here',
                     'cost':1,
                     'text':'You are sitting in a very confined space. There is a panel of buttons and dials in front of you. A roaring noise overwhelms all but a persistent beeping sound.',
-                    'keys':['sitting','buttons','dials','noise']
+                    'keys':['sitting','buttons','dials','noise','sound']
                 },
                 {   'id':'sitting',
                     'cost':3,
-                    'text':'You are strapped tightly in your seat. You pull at the belt straps over your shoulders and around your waist but they remain securely in place. You can go back to the start if you want.',
-                    'keys':['start']
+                    'text':'You are strapped tightly in your seat. You pull at the belt straps over your shoulders and around your waist but they remain securely in place. There is nothing else here.',
+                    'keys':['here']
                 },
                 {   'id':'buttons',
                     'cost':2,
@@ -57,12 +57,14 @@ angular.module('going', [])
         var txt = $scope.currmoment.text;
         var words = txt.split(' ');
         var matchwords = $scope.currmoment.keys;
-        console.log(matchwords);
+        //console.log(words);
         var ret = '';
         for(var i = 0; i < words.length; i++){
-            var check = matchwords.indexOf(words[i]);
+            var thisword = words[i].replace(/[^a-zA-Z ]/g, ""); //temporarily strip out any non-alpha chars
+            //console.log(thisword);
+            var check = matchwords.indexOf(thisword);
             if(check !== -1){
-                ret = ret + ' <span class="word" data-ng-click="click(\'' + words[i] + '\')">' + words[i] + '</span>';
+                ret = ret + ' <span class="word" data-ng-click="click(\'' + thisword + '\')">' + words[i] + '</span>';
             }
             else {
                 ret = ret + ' ' + words[i];
