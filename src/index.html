@@ -36,8 +36,14 @@
 <body>
 
     <div class="page" data-ng-app="going" data-ng-controller="goingController as g" data-ng-init="init()">
-        <span class="h1">You are going to die in {{ time }} seconds.</span>
-        <div class="textwrapper" dynamic="html"></div>
+        <span class="title">
+            <span ng-show="time > 0">You are going to die in {{ time }} seconds.</span>
+            <span ng-show="time == 0">You are dead.</span>
+        </span>
+        <div class="textwrapper">
+            <div class="text prev" dynamic="prevp"></div>
+            <div class="text curr" dynamic="currp"></div>
+        </div>
     </div>
 
     <script src="static/bower_components/angular/angular.min.js"></script>

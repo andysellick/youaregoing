@@ -127,6 +127,19 @@
 		-webkit-box-shadow: @shadow;
 		box-shadow        : @shadow;
 	}
+	
+	/*
+		Usage:
+		.keyframes(animname; {
+			0% {
+				height:0;
+			}
+			100% {
+				height:50px;
+			}
+        });
+        .animation(animname 0.8s ease-in);
+	*/
 	.keyframes(@name;
 	@arguments) {
 		@-webkit-keyframes @name {

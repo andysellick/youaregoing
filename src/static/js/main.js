@@ -18,10 +18,12 @@ angular.module('going', [])
     $scope.level = 0;
     $scope.currmoment = 0;
     $scope.time = 0;
-    $scope.currtext = '';
-    $scope.prevtext = '';
+    $scope.savedp = '';
+    $scope.prevp = '';
     $scope.levels = [
         {   'time':17,
+            'success':'',
+            'fail':'',
             'moments':[
                 {   'id':'here',
                     'cost':1,
@@ -30,8 +32,28 @@ angular.module('going', [])
                 },
                 {   'id':'sitting',
                     'cost':3,
-                    'text':'You are strapped tightly in your seat. You pull at the belt straps over your shoulders and around your waist but they remain securely in place. There is nothing else here.',
+                    'text':'There is a harness over your shoulders and around your waist. There is a control stick between your knees. There is nothing else here.',
+                    'keys':['here','control','harness']
+                },
+                {   'id':'harness',
+                    'cost':3,
+                    'text':'You pull at the straps holding you to the seat but they are securely fastened. There is nothing else here.',
                     'keys':['here']
+                },
+                {   'id':'control',
+                    'cost':2,
+                    'text':'You grab the joystick with both hands. You can move it up or down.',
+                    'keys':['up','down']
+                },
+                {   'id':'up',
+                    'cost':2,
+                    'text':'You pull the control stick backwards as hard as you can. The noise outside increases in pitch as the nose of the plane lifts.',
+                    'keys':['']
+                },
+                {   'id':'down',
+                    'cost':5,
+                    'text':'',
+                    'keys':['']
                 },
                 {   'id':'buttons',
                     'cost':2,
@@ -69,26 +91,30 @@ angular.module('going', [])
                 ret = ret + ' ' + words[i];
             }
         }
-        $scope.currtext = '<p>' + ret + '</p>';
-        $scope.html = $scope.prevtext + '<p>' + ret + '</p>';
+        $scope.currp = '<p>' + ret + '</p>';
+        $scope.savedp = '<p>' + txt + '</p>';
     };
 
     $scope.click = function(word) {
-        $scope.prevtext = $scope.currtext;
+        var found = 0;
         //console.log(word);
         for(var x = 0; x < $scope.currlevel.moments.length; x++){
             if($scope.currlevel.moments[x].id === word){
                 $scope.currmoment = $scope.currlevel.moments[x];
                 $scope.time = Math.max(0,$scope.time - $scope.currlevel.moments[x].cost);
+                found = 1;
                 break;
             }
         }
-        if($scope.time > 0){
-            $scope.outputPara();
-        }
-        else {
-            console.log('game over');
-            $scope.html = '';
+        if(found){
+            if($scope.time > 0){
+                $scope.prevp = $scope.savedp;
+                $scope.outputPara();
+            }
+            else {
+                console.log('game over');
+                $scope.currp = '';
+            }
         }
     };
 
