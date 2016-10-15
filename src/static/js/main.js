@@ -20,7 +20,6 @@ angular.module('going', [])
     $scope.time = 0;
     $scope.currtext = '';
     $scope.prevtext = '';
-    //FIXME bug if keyword is last in sentence, doesn't highlight
     $scope.levels = [
         {   'time':17,
             'moments':[
@@ -36,8 +35,8 @@ angular.module('going', [])
                 },
                 {   'id':'buttons',
                     'cost':2,
-                    'text':'There are a lot of buttons in front of them. Some of them have labels, but you can\'t read them because everything is shaking so much. You can go back to the start if you want.',
-                    'keys':['start']
+                    'text':'There are a lot of buttons in front of you. Some of them have labels, but you can\'t read them because everything is shaking so much. There is nothing else here.',
+                    'keys':['here']
                 }
             ]
         }
@@ -60,7 +59,7 @@ angular.module('going', [])
         //console.log(words);
         var ret = '';
         for(var i = 0; i < words.length; i++){
-            var thisword = words[i].replace(/[^a-zA-Z ]/g, ""); //temporarily strip out any non-alpha chars
+            var thisword = words[i].replace(/[^a-zA-Z ]/g, ''); //temporarily strip out any non-alpha chars
             //console.log(thisword);
             var check = matchwords.indexOf(thisword);
             if(check !== -1){
@@ -70,10 +69,12 @@ angular.module('going', [])
                 ret = ret + ' ' + words[i];
             }
         }
-        $scope.html = ret;
+        $scope.currtext = '<p>' + ret + '</p>';
+        $scope.html = $scope.prevtext + '<p>' + ret + '</p>';
     };
 
     $scope.click = function(word) {
+        $scope.prevtext = $scope.currtext;
         //console.log(word);
         for(var x = 0; x < $scope.currlevel.moments.length; x++){
             if($scope.currlevel.moments[x].id === word){
